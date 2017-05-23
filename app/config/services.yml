@@ -1,0 +1,22 @@
+parameters:
+  test.command.class: AppBundle\Command\TestCommand
+  test.handler.registry.class: AppBundle\Registry\TestHandlerRegistry
+  test.seq.io.write.handler.class: AppBundle\Handler\SeqIOWriteTestHandler
+
+services:
+  test.command:
+    class: %test.command.class%
+    calls:
+      registry: [ setRegistry, [ "@test.handler.registry" ] ]
+    tags:
+      - [ name: console.command ]
+
+  test.handler.registry:
+    class: %test.handler.registry.class%
+    calls:
+      seqiowrite: [ addHandler, [ "@test.seq.io.write.handler", "io_seq_write" ] ]
+
+  test.seq.io.write.handler:
+    class: %test.seq.io.write.handler.class%
+    tags:
+      - [ name: test.handler ]
